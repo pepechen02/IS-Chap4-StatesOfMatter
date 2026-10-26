@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>States of Matter Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+  /* Layout: one centred column styled like a lab notebook page. Particle-dot masthead, white answer cards, cyan progress. */
+  :root{
+    --bg:#E9F2F8;
+    --card:#FFFFFF;
+    --ink:#10283C;
+    --muted:#54697B;
+    --line:#CFDDE8;
+    --soft:#DDE9F2;
+    --accent:#22C3D6;
+    --accent-ink:#0B2233;
+    --accent-soft:#D3F4F8;
+    --accent-text:#0A6270;
+    --primary:#0F6FB5;
+    --primary-ink:#FFFFFF;
+    --primary-soft:#DCEBF8;
+    --good:#14805A;
+    --good-soft:#DDF3EA;
+    --bad:#BC3A3A;
+    --bad-soft:#FBE4E2;
+    --part:#0A6270;
+    --part-soft:#D3F4F8;
+    --grid:rgba(15,111,181,.16);
+    --particle:#E0388A;
+    --f-display:'Bricolage Grotesque','Noto Sans TC',system-ui,sans-serif;
+    --f-body:'Figtree','Noto Sans TC',system-ui,-apple-system,sans-serif;
+    --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+    --bg:#0B161F;
+    --card:#13222D;
+    --ink:#E8F1F8;
+    --muted:#9BB0C0;
+    --line:#243746;
+    --soft:#1A2E3B;
+    --accent:#3DD6E8;
+    --accent-ink:#07202B;
+    --accent-soft:#123743;
+    --accent-text:#7BE7F2;
+    --primary:#6CB8F0;
+    --primary-ink:#0B161F;
+    --primary-soft:#17334A;
+    --good:#47D9A5;
+    --good-soft:#12362B;
+    --bad:#FF8F8A;
+    --bad-soft:#3E1B1B;
+    --part:#7BE7F2;
+    --part-soft:#123743;
+    --grid:rgba(108,184,240,.18);
+    --particle:#FF7BB8;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0B161F;
+    --card:#13222D;
+    --ink:#E8F1F8;
+    --muted:#9BB0C0;
+    --line:#243746;
+    --soft:#1A2E3B;
+    --accent:#3DD6E8;
+    --accent-ink:#07202B;
+    --accent-soft:#123743;
+    --accent-text:#7BE7F2;
+    --primary:#6CB8F0;
+    --primary-ink:#0B161F;
+    --primary-soft:#17334A;
+    --good:#47D9A5;
+    --good-soft:#12362B;
+    --bad:#FF8F8A;
+    --bad-soft:#3E1B1B;
+    --part:#7BE7F2;
+    --part-soft:#123743;
+    --grid:rgba(108,184,240,.18);
+    --particle:#FF7BB8;
+    color-scheme:dark;
+  }
+
+  body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;margin:0;
+       padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+       padding-block:0 40px;-webkit-text-size-adjust:100%}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+  #root{max-width:760px;margin:0 auto}
+  button{font-family:inherit;cursor:pointer}
+  button:disabled{cursor:not-allowed}
+  button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .rise{animation:rise .22s ease-out both}
+  @keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  .bob{animation:bob 2.6s ease-in-out infinite}
+  @media (prefers-reduced-motion:reduce){.rise,.bob{animation:none}*{transition:none!important}}
+
+  /* particle-dot masthead (replaces the blueprint grid) */
+  .blueprint{background-color:var(--card);
+    background-image:radial-gradient(circle,var(--grid) 2.2px,transparent 2.8px);
+    background-size:24px 24px}
+  .diagbox{width:100%;max-width:260px;border:1px solid var(--line);border-radius:14px;background:var(--soft);overflow:hidden}
+  .diagbox svg,.pdiag{display:block;width:100%;height:auto;background:var(--soft)}
+  .pdiag{border-radius:10px}
+  /* Key Points page */
+  .nt h2{font-family:var(--f-display);font-weight:800;font-size:20px;margin:30px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--accent)}
+  .nt h2:first-child{margin-top:0}
+  .nt h3{font-family:var(--f-display);font-weight:800;font-size:16px;margin:0 0 6px}
+  .nt .box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:10px 0;font-size:15px;line-height:1.65}
+  .nt .ngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:10px 0}
+  .nt .ngrid .box{margin:0}
+  .nt ul,.nt ol{margin:6px 0;padding-left:20px}
+  .nt ul{list-style:disc}.nt ol{list-style:decimal}
+  .nt b.k{color:var(--accent-text);font-family:var(--f-mono);font-size:13px;font-weight:600;letter-spacing:.02em}
+  .nt .zh{display:block;color:var(--muted);font-size:.92em;margin-top:4px}
+  .nt .wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+  .nt table{width:100%;border-collapse:collapse;font-size:14px;min-width:520px}
+  .nt td,.nt th{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  .nt th{background:var(--primary-soft);color:var(--primary);font-family:var(--f-mono);font-size:12px;letter-spacing:.04em}
+  .nt tr:last-child td{border-bottom:0}
+  .nt .flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-weight:600;margin-top:8px}
+  .nt .flow .st{background:var(--primary);color:var(--primary-ink);border-radius:10px;padding:4px 12px}
+  .nt .flow small{color:var(--muted);font-weight:500;font-size:12px}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>
+  tailwind.config = { theme: { extend: {
+    colors: {
+      bg:'var(--bg)', card:'var(--card)', ink:'var(--ink)', muted:'var(--muted)', line:'var(--line)', soft:'var(--soft)',
+      accent:'var(--accent)', accentink:'var(--accent-ink)', accentsoft:'var(--accent-soft)', accenttext:'var(--accent-text)',
+      primary:'var(--primary)', primaryink:'var(--primary-ink)', primarysoft:'var(--primary-soft)',
+      good:'var(--good)', goodsoft:'var(--good-soft)', bad:'var(--bad)', badsoft:'var(--bad-soft)',
+      part:'var(--part)', partsoft:'var(--part-soft)'
+    },
+    fontFamily: { display:['var(--f-display)'], mono:['var(--f-mono)'] }
+  } } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo, useRef } = React;
+
+/* ===== DATA (from the original quiz bank) ===== */
+/* [word, 中文, definition, example] */
+var V7=[
+['condensation','凝結','the process by which a gas loses heat and changes into a liquid','e.g. water vapour touches a cold glass and becomes water droplets'],
+['control variable','控制變因','a factor that is kept the same to ensure that an experiment is fair','e.g. amount of water, type of material, place where the shirt is hung'],
+['dependent variable','應變因','a factor that is measured in an experiment','e.g. time taken for the shirt to dry completely'],
+['independent variable','自變因','a factor that is investigated in an experiment','e.g. the temperature (35°C vs 25°C)'],
+['evaporation','蒸發','the process by which a liquid gains heat and changes into a gas','e.g. a puddle dries up in the sun'],
+['gaseous','氣態的','the state of matter in which particles are further apart and move more freely than in the solid and liquid states','e.g. oxygen, nitrogen, carbon dioxide, water vapour'],
+['room temperature','室溫','the temperature of the surroundings','e.g. gases such as air exist as gases at room temperature']
+];
+var VB=[
+['squeeze','擠壓','to press something firmly so that what is inside comes out','e.g. squeezing a sponge in water gives bubbles of air'],
+['traces','微量','very small amounts of something','e.g. air has traces of carbon dioxide, water vapour and hydrogen'],
+['arranged','排列','put in a particular order or position','e.g. solid particles are arranged in a regular pattern'],
+['pattern','規律','an order that repeats in a regular way','e.g. particles in a solid are in a regular pattern'],
+['vibrate','振動','to move quickly back and forth in a small space without moving away','e.g. solid particles vibrate about a fixed position'],
+['randomly','隨機地','in no fixed order or pattern','e.g. particles in liquids and gases are randomly arranged'],
+['compressed','被壓縮','pressed into a smaller space','e.g. gases can be compressed but solids and liquids cannot'],
+['rate','速率','how fast or slow something happens','e.g. the rate of evaporation'],
+['scenarios','情境','descriptions of different situations that could happen','e.g. clothes drying on a hot day, a windy day, or spread out'],
+['taken into account','納入考慮','thought about and included when planning','e.g. variables must be taken into account in a fair test'],
+['foggy','起霧的','covered with tiny water droplets so it is hard to see through','e.g. a bathroom mirror after a hot shower'],
+['contact','接觸','when two things touch each other','e.g. hot water vapour comes in contact with a cooler mirror'],
+['droplets','小水滴','very small drops of liquid water','e.g. water droplets on a glass of iced water'],
+['mist','薄霧','a cloud of tiny water droplets in the air','e.g. the mist near the spout of a boiling kettle'],
+['spout','壺嘴','the narrow opening of a kettle that the hot water or steam comes out of','e.g. mist forms near the spout of a boiling kettle']
+];
+function gen(list,mode,offs){return list.map(function(w,i){var n=list.length,all=[w].concat(offs.map(function(o){return list[(i+o)%n];}));
+ if(mode==="d")return ['b','Which definition matches “'+w[0]+'”?',all.map(function(x){return x[2];}),w[0]+'（'+w[1]+'）：'+w[2]+'。'+w[3]+'。'];
+ return ['b','Which word matches this definition: “'+w[2]+'”?',all.map(function(x){return x[0];}),'答案是 '+w[0]+'（'+w[1]+'）：'+w[2]+'。'+w[3]+'。'];});}
+var Q={};
+Q.A1=gen(V7,"d",[1,3,5]).concat(gen(V7,"w",[2,4,6])).map(mk);
+Q.A2=gen(VB,"w",[1,5,9]).map(mk);
+function mk(r){return {lv:r[0],q:r[1],opts:r[2],ex:r[3],a:r[4]||0,dg:r[5]||null};}
+Q.A3=[
+['b','Which list contains only gases found in air?',['oxygen, nitrogen, carbon dioxide','oxygen, iron, sand','nitrogen, ice, salt','carbon dioxide, wood, liquid water'],'常見氣體：oxygen 氧、carbon dioxide 二氧化碳、water vapour 水蒸氣、nitrogen 氮、hydrogen 氫。鐵、沙、鹽、木頭是固體。'],
+['b','The air around us is ___.',['a mixture of gases','one single gas','a liquid','a solid'],'空氣是混合氣體（nitrogen, oxygen，及微量 carbon dioxide, water vapour, hydrogen）。吹進氣球的空氣也是混合氣體。'],
+['b','Water vapour is water in the ___ state.',['gaseous','solid','liquid','frozen'],'water vapour（水蒸氣）是水的氣態（gaseous state）。'],
+['b','The bubbles you see when you squeeze a sponge under water are made of ___.',['air','water','sponge','steam'],'氣泡是空氣，是氣體；課本活動中海綿＝固體、水＝液體、氣泡＝氣體。'],
+['b','Look at the particle model. Which state of matter is shown?',['Solid','Liquid','Gas','Water vapour only'],'粒子緊密、規則排列 → 固體（solid）。',0,'solid'],
+['b','Look at the particle model. Which state of matter is shown?',['Liquid','Solid','Gas','Cannot tell'],'粒子較不緊密、隨機排列、互相滑動 → 液體（liquid）。',0,'liquid'],
+['b','Look at the particle model. Which state of matter is shown?',['Gas','Solid','Liquid','Cannot tell'],'粒子相距很遠、隨機分散 → 氣體（gas）。',0,'gas'],
+['b','How do particles in a solid move?',['They vibrate about a fixed position','They move quickly in all directions','They move around each other','They do not move at all'],'固體粒子在固定位置振動；液體粒子互相滑動；氣體粒子快速向各方向移動。'],
+['b','Which state of matter can be compressed?',['Gas','Solid','Liquid','Solid and liquid'],'只有氣體可被壓縮。固體和液體不能。'],
+['a','Which state has a fixed volume but no fixed shape?',['Liquid','Solid','Gas','Solid and gas'],'液體體積固定、形狀不固定；固體兩者皆固定；氣體兩者皆不固定。'],
+['a','Why can a gas be compressed but a solid cannot?',['Gas particles are far apart so they can be pushed closer together','Gas particles are heavier','Solid particles move faster','Gas particles are packed in a regular pattern'],'氣體粒子之間空隙很大，可被擠近；固體粒子已緊密堆積。'],
+['a','In the sponge activity, which of these correctly identifies the solid, liquid and gas?',['sponge = solid, water = liquid, bubbles (air) = gas','sponge = liquid, water = gas, bubbles = solid','sponge = gas, water = solid, bubbles = liquid','sponge = solid, water = gas, bubbles = liquid'],'海綿是固體、水是液體、氣泡（空氣）是氣體。']
+].map(mk);
+Q.B1=[
+['b','After rain, puddles seem to disappear after some time. Which process causes this?',['Evaporation','Condensation','Compression','Vibration'],'水坑的水吸收周圍的熱，變成水蒸氣逸入空氣中，這是蒸發。'],
+['b','When water evaporates, it changes into ___.',['water vapour','ice','a solid','bubbles of air'],'water vapour（水蒸氣）是水的氣態。'],
+['b','At what temperatures does evaporation happen?',['At all temperatures','Only when the surroundings are hot','Only at 100°C','Only below 0°C'],'蒸發在任何溫度都會發生，只是溫度高時較快。'],
+['b','During evaporation, which particles escape into the surroundings?',['Particles on the surface of the liquid','Particles at the bottom of the liquid','All particles at once','Particles of the container'],'表面的粒子吸熱後逃離成氣體粒子。',0,'evap'],
+['b','Alcohol is rubbed on skin before an injection. Why does the skin feel cooler?',['The alcohol evaporates and removes heat from the skin','The alcohol condenses on the skin','The alcohol freezes','The alcohol adds heat to the skin'],'酒精吸熱蒸發很快，帶走皮膚的熱量。'],
+['b','When using a hair dryer, why does hair dry faster?',['Water in the hair gains heat from the hot air and evaporates','Water in the hair condenses','The hair absorbs the water','The hot air freezes the water'],'熱空氣提供熱量，頭髮上的水吸熱蒸發成水蒸氣。'],
+['b','Do clothes dry more quickly on a hot day or a cool day?',['A hot day','A cool day','They dry at the same speed','They never dry'],'溫度越高，蒸發速率越快，衣服乾得越快。'],
+['b','Do clothes dry more quickly on a day with wind or without wind?',['With wind','Without wind','Same speed','Wind makes them wetter'],'有風時蒸發較快（課本 p.63 的情境之一）。'],
+['a','Which wet shirt would dry fastest?',['Spread out on a hot, windy day','Folded on a cool, still day','Hung close to other clothes on a cool day','Placed in a sealed bag'],'溫度高、有風、衣物攤開，都讓蒸發速率變快。'],
+['a','Why is evaporation used to make dried fish (ikan bilis) and other dried food?',['It reduces the water content so the food lasts longer','It adds water to the food','It makes the food freeze','It turns the food into a gas'],'乾燥食物是利用蒸發去除水分，使食物保存較久。'],
+['a','You breathe on a small mirror and it fogs up. After a few minutes the fog disappears. Why?',['The water droplets gain heat and evaporate into water vapour','The droplets condense into ice','The mirror absorbs the droplets','The droplets turn into air'],'起霧是凝結；放一會兒後，小水滴吸收周圍的熱蒸發成水蒸氣，霧就消失了。']
+].map(mk);
+Q.B2=[
+['b','A bathroom mirror becomes foggy after a hot shower. Which process causes this?',['Condensation','Evaporation','Compression','Vibration'],'較熱的水蒸氣碰到較冷的鏡面，失去熱量變成小水滴，這是凝結。'],
+['b','The “fog” on a mirror is made of ___.',['tiny water droplets','water vapour','ice','air'],'霧是水蒸氣凝結成的微小水滴（液體），不是氣體。'],
+['b','Water droplets form on the outside of a glass of iced water. Where do they come from?',['Water vapour in the air that loses heat and condenses','Water leaking through the glass','Ice melting inside','The glass itself'],'空氣中的水蒸氣碰到冰冷的杯壁，失熱凝結成水滴。'],
+['b','What causes the “mist” near the spout of a boiling kettle?',['Hot water vapour loses heat in cooler air and condenses into tiny droplets','The kettle is leaking','Water freezes at the spout','Air particles are compressed'],'壺嘴附近熱的水蒸氣遇到較冷的空氣，失熱凝結成小水滴，形成薄霧。'],
+['b','Why do glasses sometimes become foggy?',['Water vapour condenses into tiny droplets on the cooler lenses','Water in the lenses evaporates','The glasses are leaking','The lenses gain heat'],'眼鏡上的霧是水蒸氣在較冷的鏡片上凝結成的小水滴。'],
+['b','The window in the picture on p.55 is foggy. What is the fog made of?',['Tiny droplets of liquid water','Water vapour','Ice crystals only','Dust'],'窗戶的霧是水蒸氣遇冷玻璃凝結成的小水滴，所以能用手指在上面寫字。'],
+['b','In the particle model, what happens to gas particles when they condense?',['They lose heat, slow down and can only move around one another','They gain heat and move faster','They become packed in a regular pattern','They disappear'],'氣體粒子失熱後變慢，只能互相繞動，變成液體粒子。'],
+['b','In the diagram (solid ⇄ liquid ⇄ gas), Q is liquid → gas and R is gas → liquid. Which arrow is condensation?',['R','Q','P','S'],'Q 是蒸發；R 是凝結。'],
+['a','Which statement about heat is correct?',['Evaporation: the liquid gains heat. Condensation: the gas loses heat.','Evaporation: the liquid loses heat. Condensation: the gas gains heat.','Both processes gain heat.','Both processes lose heat.'],'蒸發＝吸熱；凝結＝失去熱量。'],
+['a','You walk from a cold place into a warm room and your glasses fog up. Why?',['Warm water vapour in the room condenses on the cooler lenses','Water in the lenses evaporates','Your glasses are leaking','The lenses gain heat from the room'],'室內溫暖的水蒸氣碰到較冷的鏡片，失熱凝結。'],
+['a','Which is NOT an example of condensation?',['A puddle drying up after rain','Water droplets on a glass of iced water','Fog on a bathroom mirror','Mist near a boiling kettle spout'],'水坑變乾是蒸發（液→氣）；其他三個都是氣→液的凝結。']
+].map(mk);
+Q.B3=[
+['b','A fair test finds out if the temperature of the surroundings affects the rate of evaporation. What is the independent variable?',['Temperature','Time taken for the shirt to dry','Type of shirt material','Amount of water in the shirt'],'被改變的是溫度（如 35°C 與 25°C）。'],
+['b','In the same test, what is the dependent variable?',['The time taken for the shirt to dry completely','Temperature','Where the shirt is hung','Type of material'],'被測量的是衣服完全變乾所需的時間。'],
+['b','In the same test, which is a control variable?',['The amount of water in the shirt','Temperature','The time taken to dry','The result'],'控制變因要保持相同：含水量、衣服材質、晾曬位置。'],
+['b','You plan a test to see if wind affects the rate of evaporation. What is the independent variable?',['The presence of wind','The time to dry','The shirt material','The amount of water'],'你改變的是「有沒有風」；測量的是變乾的時間。'],
+['a','Gemma (a): Set-up A (no sun) and B (sun), each with 10 ml of water. What is the independent variable?',['Whether the water is in the sun (heat) or not','The amount of water','The shape of the dish','The time of day only'],'水量與容器相同，只有有無太陽（溫度）不同。'],
+['a','Gemma (b): Set-up C (glass) and D (dish), both with 50 ml of water in the sun. What is the independent variable?',['The shape of the container (exposed surface area)','The amount of water','Whether the sun is out','The temperature'],'水量、日照相同，只有容器形狀（水暴露的表面積）不同。'],
+['a','In a fair test, how many variables should you change at a time?',['Only one','Two','Three','As many as possible'],'公平測試一次只改變一個變因，其他保持相同。'],
+['a','Why should you repeat observations in an investigation?',['To get more reliable results','To change more variables','To make the test unfair','To avoid making a prediction'],'重複觀察可讓結果更可靠。'],
+['a','Which type of scientific enquiry changes one variable and keeps the others the same?',['Fair testing','Observing over time','Research','Identifying and classifying'],'只改變一個變因、其他保持相同的探究類型是公平測試（fair testing）。'],
+['a','You use a hot kettle in an investigation. Which is a possible risk and a way to minimise it?',['Hot steam can burn – keep a safe distance and be careful','Water is too cold – add ice','The kettle is too light – add weights','There is no risk'],'熱水和蒸氣可能燙傷，要保持距離、小心操作並請大人協助，這就是規劃時要考慮的風險與安全措施。'],
+['a','A prediction is ___.',['what you think the results will be, using what you know','the result you get after the test','a variable that is kept the same','a type of equipment'],'prediction（預測）是根據已有知識，在實驗前推測結果。']
+].map(mk);
+
+
+function circles(pts,r){return pts.map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+r+'" fill="var(--particle)" stroke="var(--card)" stroke-width="1"/>';}).join("");}
+function diagram(t){
+ var p=[],i,j,s=11;function rnd(){s=(s*9301+49297)%233280;return s/233280;}
+ if(t==="solid"){for(i=0;i<9;i++)for(j=0;j<5;j++)p.push([20+i*20,20+j*20]);return '<svg viewBox="0 0 200 120" class="pdiag">'+circles(p,10)+'</svg>';}
+ if(t==="liquid"){for(i=0;i<8;i++)for(j=0;j<5;j++)p.push([20+i*22+(rnd()-.5)*12,20+j*21+(rnd()-.5)*12]);return '<svg viewBox="0 0 200 120" class="pdiag">'+circles(p,9)+'</svg>';}
+ if(t==="gas"){p=[[30,22],[110,30],[170,20],[60,62],[140,74],[25,100],[95,98],[175,104],[125,110]];return '<svg viewBox="0 0 200 120" class="pdiag">'+circles(p,7)+'</svg>';}
+ if(t==="evap"){var g=[[50,60],[95,40],[140,70],[75,25]];for(i=0;i<9;i++)for(j=0;j<3;j++)p.push([34+i*16,92+j*16]);
+  return '<svg viewBox="0 0 200 150" class="pdiag"><rect x="22" y="8" width="156" height="132" rx="8" fill="none" stroke="var(--primary)" stroke-width="2"/>'+circles(p,8)+circles(g,6)+g.map(function(q){return '<path d="M'+q[0]+','+(q[1]-9)+' l0,-12 m-3,4 l3,-5 l3,5" stroke="var(--primary)" stroke-width="2" fill="none"/>';}).join("")+'</svg>';}
+ return "";
+}
+
+
+function vtab(list,star){return '<div class="wrap"><table><tr><th>Word</th><th>Definition</th><th>中文</th><th>Example</th></tr>'+list.map(function(w){return '<tr><td><b>'+(star?'★ ':'')+w[0]+'</b></td><td>'+w[2]+'</td><td>'+w[1]+'</td><td>'+w[3].replace('e.g. ','')+'</td></tr>';}).join("")+'</table></div>';}
+
+function notesHTML(){ var h=[];
+h.push('<h2 style="margin-top:0">Objectives 學習目標</h2><div class="box"><ol><li>Know the vocabulary. 熟記單字</li><li>Understand that substances can be <b>gaseous</b>; know common gases: <b>oxygen, carbon dioxide, water vapour, nitrogen, hydrogen</b>.</li><li>Use the <b>particle model</b> to describe solid, liquid and gas.</li><li>Describe the processes of <b>evaporation</b> and <b>condensation</b>.</li><li>Identify the <b>factors that affect the rate of evaporation</b>.</li></ol></div>');
+h.push('<h2>Science Words 必背單字（7 個）</h2>'+vtab(V7,true));
+h.push('<h2>Word Boost 課文單字</h2>'+vtab(VB,false));
+h.push('<h2>Opening 開場 (p.55)</h2><div class="box">Windows get <b>foggy</b>, and bathroom mirrors get foggy after a hot shower. The “fog” is <b>liquid</b> (tiny water droplets). It comes from <b>water vapour</b> in the air that touches a cooler surface and condenses. You can write messages with a finger on a foggy window.<span class="zh">霧是液態的小水滴，來源是空氣中的水蒸氣遇冷凝結。</span></div>');
+h.push('<h2>A. Particle Model 粒子模型</h2>');
+h.push('<div class="box"><b class="k">Let’s Explore (p.56)</b>: squeeze a sponge under water → <b>bubbles</b> appear. The bubbles are made of <b>air</b>. Solid = sponge · liquid = water · gas = air. <span class="zh">海綿＝固體、水＝液體、氣泡（空氣）＝氣體。要輪流操作，讓每個人都有機會。</span></div>');
+h.push('<div class="box"><b class="k">What are gaseous substances? (p.57)</b><ul><li>Substances can exist as solids, liquids and gases. Gases are in the <b>gaseous state</b>.</li><li>The air around us is a <b>mixture of gases</b>: <b>nitrogen, oxygen</b>, and small <b>traces</b> of <b>carbon dioxide, water vapour</b> and <b>hydrogen</b>. The air you blow into a balloon is also a mixture of gases.</li><li>These exist as gases at <b>room temperature</b> (the temperature of our surroundings). Room temperature is different in different parts of the world.</li></ul><span class="zh">空氣是混合氣體；常見氣體：氧、二氧化碳、水蒸氣、氮、氫。</span></div>');
+h.push('<div class="box"><b class="k">How can the particle model describe gases? (p.58)</b> Scientists use the particle model to explain the behaviour of each type of matter. Particles in solids, liquids and gases differ in how they are <b>arranged</b> and how they <b>move</b>.</div>');
+h.push('<div class="ngrid"><div class="box"><h3>Solid 固體</h3>'+diagram("solid")+'<ul><li>Particles packed <b>very closely together in a regular pattern</b></li><li>Particles <b>vibrate about a fixed position</b></li><li><b>Fixed shape and volume</b></li><li>Cannot be compressed</li></ul></div><div class="box"><h3>Liquid 液體</h3>'+diagram("liquid")+'<ul><li>Particles packed <b>less tightly</b> and <b>randomly arranged</b></li><li>Particles <b>move around each other</b></li><li><b>Fixed volume but no fixed shape</b></li><li>Cannot be compressed</li></ul></div><div class="box"><h3>Gas 氣體</h3>'+diagram("gas")+'<ul><li>Particles <b>far apart</b> and <b>randomly arranged</b></li><li>Particles <b>move quickly in all directions</b></li><li><b>No fixed volume or shape</b></li><li><b>Can be compressed</b></li></ul></div></div>');
+h.push('<div class="box"><b class="k">Model</b> 模型: a model shows the <b>important features</b> of an idea. Check Your Learning: gas particles are <b>far apart</b> and move quickly in all directions, unlike solids (closely packed, vibrating) and liquids (less tightly packed, moving around each other).</div>');
+h.push('<h2>B. Evaporation 蒸發</h2>');
+h.push('<div class="box"><b class="k">Let’s Explore (p.60)</b>: hold a small mirror in front of your mouth and breathe out → the mirror becomes <b>foggy</b> (water vapour in your breath condenses on the cooler mirror). Leave it aside for a few minutes → the fog <b>disappears</b> (the droplets gain heat and evaporate).<span class="zh">對著鏡子呵氣會起霧（凝結）；放一會兒霧消失（蒸發）。</span></div>');
+h.push('<div class="box"><b class="k">What happens during evaporation? (p.61)</b><ul><li>Puddles form on a rainy day and later seem to disappear. The water <b>gains heat from the surroundings</b> and changes into a gas called <b>water vapour</b>, which escapes into the air.</li><li><b>Evaporation</b> = a liquid changing into a gas. It happens at <b>all temperatures</b>.</li><li>Particle model: particles on the <b>surface</b> of the liquid gain heat and escape into the surroundings; the substance changes from liquid to gas.</li></ul>'+diagram("evap")+'</div>');
+h.push('<div class="box"><b class="k">Everyday examples (p.62)</b><ul><li><b>Hair dryer</b>: water in the hair gains heat from hot air and evaporates into water vapour.</li><li><b>Alcohol before an injection</b>: it disinfects the skin, gains heat and evaporates quickly, removing heat from the skin so it feels <b>cooler</b>.</li><li><b>Wet clothes</b>: water evaporates into water vapour and clothes dry.</li><li><b>Science at Work – dried food</b>: evaporation is used in the food industry (e.g. dried fish like <i>ikan bilis</i>) to <b>reduce the water content</b> so food <b>lasts longer</b>. Task: visit a grocer, find dried foods and research how they are dried.</li></ul></div>');
+h.push('<div class="box"><b class="k">Factors affecting the rate of evaporation (p.63)</b> 蒸發速率 = how fast or slow evaporation happens. Scenarios:<ul><li>Hot day vs cool day <span class="zh">溫度</span></li><li>Day with wind vs without wind <span class="zh">風</span></li><li>Clothes hung close together vs spread out <span class="zh">衣物間隔</span></li></ul></div>');
+h.push('<h2>Fair Test 公平測試 (pp.64–65)</h2><div class="wrap"><table><tr><th>Variable</th><th>Meaning</th><th>Example</th></tr><tr><td><b>Independent</b> 自變因</td><td>The <b>changed</b> variable; what we are investigating. Change only <b>one</b> at a time.</td><td>Temperature of surroundings (35°C vs 25°C)</td></tr><tr><td><b>Dependent</b> 應變因</td><td>The variable we <b>measure</b></td><td>Time for the shirt to dry completely</td></tr><tr><td><b>Control</b> 控制變因</td><td>Factors kept the <b>same</b> so the test is fair</td><td>Amount of water in the shirt, type of material, place where the shirt is hung</td></tr></table></div>');
+h.push('<div class="box"><b class="k">Plan an investigation: does wind affect the rate of evaporation?</b> Consider:<ul><li>Independent, dependent and control variables (independent = presence of wind; dependent = drying time)</li><li>Equipment needed and how to use it appropriately</li><li>Possible <b>risks</b> and how to carry out the investigation <b>safely</b></li><li>Make a <b>prediction</b></li><li>Do you need to <b>repeat</b> observations for more <b>reliable</b> results?</li></ul>Carry out safely · take measurements <b>accurately</b> · record in a <b>table or diagram</b> · present findings to classmates. Type of scientific enquiry: <b>fair testing</b> (change one variable, keep others the same, measure the result).</div>');
+h.push('<h2>Condensation 凝結 (pp.66–67)</h2><div class="box"><b class="k">Condensation</b> = a gas <b>loses heat</b> and changes into a liquid. Hotter water vapour comes in <b>contact</b> with a cooler surface, loses heat and changes into <b>water droplets</b>.</div>');
+h.push('<div class="ngrid"><div class="box"><h3>Bathroom mirror</h3>After a hot shower, the hotter water vapour touches the cooler mirror, loses heat and becomes water droplets → the mirror gets foggy.</div><div class="box"><h3>Glasses</h3>The fog on glasses and mirrors is made of <b>tiny droplets of water</b> formed when water vapour condenses.</div><div class="box"><h3>Glass of iced water</h3>Freely moving gas particles in the air lose heat when they touch the cooler glass, slow down until they can only move around one another, and turn into water droplets on the glass.</div><div class="box"><h3>Boiling kettle</h3>Hotter water vapour near the spout meets the cooler water vapour in the surrounding air, loses heat and condenses into tiny water droplets. The <b>mist</b> is made of these droplets.</div><div class="box"><h3>Window</h3>Foggy windows (p.55): water vapour condenses on the cool glass.</div><div class="box"><h3>Your examples</h3>Think of other examples of condensation in daily life (e.g. a cold drink bottle, a cold car windscreen).</div></div>');
+h.push('<div class="box"><b class="k">Changes of state</b><div class="flow"><span class="st">solid</span><small>P ⇄ S</small><span class="st">liquid</span><small>Q evaporation (gains heat) ⇄ R condensation (loses heat)</small><span class="st">gas</span></div></div>');
+h.push('<h2>Check Your Learning 自我檢查</h2><div class="box">Use the particle model to describe evaporation and condensation. I can: describe evaporation and condensation · use a model to explain a process · plan a fair test and identify the three variables · choose and use equipment properly · describe risks and how to minimise them · make predictions · decide when to repeat observations · do practical work safely · take measurements accurately · create tables and diagrams · recognise features of different scientific enquiries · describe the use of science locally.</div>');
+
+return h.join(""); }
+
+const ICONS = {
+  /* open book + star */
+  words: <>
+    <path d="M5 11 Q14 8 24 13 Q34 8 43 11 V37 Q34 34 24 39 Q14 34 5 37 Z" fill="var(--card)"/>
+    <path d="M24 13 V39"/>
+    <polygon points="14.5,17 16.4,21.2 21,21.7 17.6,24.8 18.6,29.3 14.5,27 10.4,29.3 11.4,24.8 8,21.7 12.6,21.2" fill="var(--accent)" strokeWidth="2"/>
+    <path d="M29 20 H38 M29 26 H38 M29 32 H35"/>
+  </>,
+  /* speech bubble */
+  wordboost: <>
+    <path d="M9 8 H39 A4 4 0 0 1 43 12 V28 A4 4 0 0 1 39 32 H25 L15 41 V32 H9 A4 4 0 0 1 5 28 V12 A4 4 0 0 1 9 8 Z" fill="var(--primary-soft)"/>
+    <path d="M13 17 H35 M13 24 H26"/>
+    <circle cx="36" cy="24" r="2.4" fill="var(--accent)" strokeWidth="2"/>
+  </>,
+  /* particle model tray */
+  particles: <>
+    <rect x="5" y="5" width="38" height="38" rx="7" fill="var(--card)"/>
+    <g fill="var(--particle)" strokeWidth="2">
+      <circle cx="15" cy="15" r="3.6"/><circle cx="25" cy="14" r="3.6"/><circle cx="34" cy="17" r="3.6"/>
+      <circle cx="13" cy="26" r="3.6"/><circle cx="23" cy="25" r="3.6"/><circle cx="33" cy="29" r="3.6"/>
+      <circle cx="17" cy="35" r="3.6"/><circle cx="28" cy="36" r="3.6"/>
+    </g>
+  </>,
+  /* evaporation: pool + rising vapour */
+  evap: <>
+    <path d="M5 34 Q11 29 17 34 T29 34 T41 34 H43 V43 H5 Z" fill="var(--primary-soft)"/>
+    <path d="M13 28 C9 24 17 21 13 16 S17 9 13 5" stroke="var(--primary)"/>
+    <path d="M24 26 C20 22 28 19 24 14 S28 7 24 3" stroke="var(--primary)"/>
+    <path d="M35 28 C31 24 39 21 35 16 S39 9 35 5" stroke="var(--primary)"/>
+  </>,
+  /* condensation: glass with droplets */
+  cond: <>
+    <path d="M13 9 H35 L32 40 Q31.8 43 29 43 H19 Q16.2 43 16 40 Z" fill="var(--primary-soft)"/>
+    <path d="M14.2 20 H33.8" />
+    <path d="M7 24 C5 27 4 28.5 4 30 A3 3 0 0 0 10 30 C10 28.5 9 27 7 24 Z" fill="var(--accent)" strokeWidth="2"/>
+    <path d="M41 14 C39 17 38 18.5 38 20 A3 3 0 0 0 44 20 C44 18.5 43 17 41 14 Z" fill="var(--accent)" strokeWidth="2"/>
+    <circle cx="24" cy="30" r="2" fill="var(--card)" strokeWidth="1.8"/>
+  </>,
+  /* fair test: beaker + thermometer */
+  fair: <>
+    <path d="M10 6 H28 M13 6 V20 L5 38 A3 3 0 0 0 7.8 42 H30.2 A3 3 0 0 0 33 38 L25 20 V6" fill="var(--card)"/>
+    <path d="M9.6 32 H28.4 L31 38 A1.4 1.4 0 0 1 29.8 40 H8.2 A1.4 1.4 0 0 1 7 38 Z" fill="var(--accent)" strokeWidth="2"/>
+    <circle cx="15" cy="35.5" r="1.4" fill="var(--card)" strokeWidth="1.5"/>
+    <path d="M38 8 V28 M35 28 A5 5 0 1 0 41 28 M38 14 V32" strokeWidth="2.2"/>
+    <circle cx="38" cy="34" r="3.2" fill="var(--particle)" strokeWidth="2"/>
+  </>,
+  /* key-points notebook */
+  notes: <>
+    <rect x="9" y="6" width="30" height="38" rx="4" fill="var(--card)"/>
+    <path d="M9 14 H5 M9 24 H5 M9 34 H5"/>
+    <path d="M16 15 H32 M16 22 H32 M16 29 H26"/>
+    <polygon points="34,30 35.3,33.2 38.8,33.5 36.1,35.7 37,39.2 34,37.3 31,39.2 31.9,35.7 29.2,33.5 32.7,33.2" fill="var(--accent)" strokeWidth="1.8"/>
+  </>
+};
+/* Masthead mascot: conical flask with particles + vapour */
+const Mascot = () => (
+  <svg viewBox="0 0 64 84" width="62" height="81" aria-hidden="true" className="bob" fill="none" stroke="var(--ink)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M32 17 C28 13 36 10 32 6 S36 1 33 -2" stroke="var(--primary)" transform="translate(0,4)"/>
+    <path d="M26 18 V36 L10 72 A5 5 0 0 0 14.5 79 H49.5 A5 5 0 0 0 54 72 L38 36 V18 Z" fill="var(--card)"/>
+    <path d="M16.2 58 H47.8 L54 72 A5 5 0 0 1 49.5 79 H14.5 A5 5 0 0 1 10 72 Z" fill="var(--primary-soft)"/>
+    <path d="M23 18 H41"/>
+    <g fill="var(--particle)" strokeWidth="1.8">
+      <circle cx="23" cy="68" r="3.3"/><circle cx="32" cy="65" r="3.3"/><circle cx="41" cy="69" r="3.3"/>
+      <circle cx="28" cy="74" r="3.3"/><circle cx="37" cy="75" r="3.3"/>
+    </g>
+    <circle cx="30" cy="46" r="2.2" fill="var(--accent)" strokeWidth="1.8"/>
+    <circle cx="34.5" cy="38" r="1.6" fill="var(--accent)" strokeWidth="1.6"/>
+  </svg>
+);
+
+
+const SEC = {
+  A1:{ id:'A1', code:'A1', en:'Science Words',     zh:'必背單字',     desc:'7 個必背單字：看字選定義、看定義選字', icon:'words',     tag:'選擇題', dir:`Choose the best answer. (1 point each)` },
+  A2:{ id:'A2', code:'A2', en:'Word Boost',        zh:'課文單字',     desc:'課文 Word Boost 單字的定義',           icon:'wordboost', tag:'選擇題', dir:`Choose the best answer. (1 point each)` },
+  A3:{ id:'A3', code:'A3', en:'Gases & Particles', zh:'氣體與粒子模型', desc:'常見氣體與粒子模型（看圖）',            icon:'particles', tag:'看圖選擇', dir:`Look carefully, then choose the best answer. (1 point each)` },
+  B1:{ id:'B1', code:'B1', en:'Evaporation',       zh:'蒸發',         desc:'蒸發的原理、例子與影響速率的因素',      icon:'evap',      tag:'選擇題', dir:`Choose the best answer. (1 point each)` },
+  B2:{ id:'B2', code:'B2', en:'Condensation',      zh:'凝結',         desc:'凝結的原理與生活例子',                  icon:'cond',      tag:'選擇題', dir:`Choose the best answer. (1 point each)` },
+  B3:{ id:'B3', code:'B3', en:'Fair Test',         zh:'公平測試',     desc:'變因、安全與公平測試（進階）',          icon:'fair',      tag:'選擇題', dir:`Choose the best answer. (1 point each)` }
+};
+const ORDER = ['A1','A2','A3','B1','B2','B3'];
+const GROUPS = [
+  { tag:'PART A', title:'單字與粒子模型 Vocabulary & Particle Model', sub:'先熟悉單字，再用粒子模型看懂固體、液體、氣體。', mods:['A1','A2','A3'] },
+  { tag:'PART B', title:'蒸發與凝結 Evaporation & Condensation',      sub:'蒸發、凝結的原理，以及如何設計公平測試。',     mods:['B1','B2','B3'] }
+];
+const FULLS = [
+  { key:'partA', tag:'FULL TEST · PART A', title:'Part A 完整挑戰', desc:'單字 + 粒子模型', secs:['A1','A2','A3'] },
+  { key:'partB', tag:'FULL TEST · PART B', title:'Part B 完整挑戰', desc:'蒸發 + 凝結 + 公平測試', secs:['B1','B2','B3'] }
+];
+const QS = {};
+ORDER.forEach(s => { QS[s] = Q[s].map((o,i) => ({ id:s+'-'+(i+1), no:i+1, type:'mc', pts:1, lv:o.lv, q:o.q, options:o.opts, ans:o.a, why:o.ex, dg:o.dg })); });
+const renderDiagram = dg => diagram(dg);
+
+const CFG = {
+  shuffle:true, keypoints:true, diagCaption:'LOOK AT THE PARTICLE MODEL',
+  lsNotes:'states-of-matter:notes:v1', lsBest:'states-of-matter:best:v1',
+  hero:{ chip:'SCIENCE · CHAPTER 4', title:'States of Matter', sub:'物質的狀態 · Particle model, evaporation & condensation',
+         intro:'分成 6 個小單元，題目有基礎與進階兩種程度。可以先讀「重點整理」，答題後馬上看到對錯與中文解析，答錯的題目會自動收進錯題筆記。' },
+  gradeOf:(score,total) => {
+    const p = score/total*100;
+    if(score===total) return { k:'S', name:'Master Scientist', zh:'科學大師', msg:'滿分！固體、液體、氣體的粒子秘密，你都掌握了。' };
+    if(p>=90) return { k:'A', name:'Lab Expert', zh:'實驗專家', msg:'非常棒！只差一點點就滿分，翻一下錯題筆記，補上最後的小拼圖。' };
+    if(p>=80) return { k:'B', name:'Junior Scientist', zh:'小小科學家', msg:'基礎很穩。把錯題筆記看過一遍，再挑戰一次，就有機會衝上 90 分。' };
+    if(p>=70) return { k:'C', name:'Lab Assistant', zh:'實驗助手', msg:'已經及格，還有進步空間。先讀重點整理與錯題解析，再重新挑戰。' };
+    return { k:'D', name:'Keep exploring!', zh:'繼續探索', msg:'別氣餒！科學家也是從一次次實驗中學習。看看重點整理，再試一次。' };
+  }
+};
+
+
+/* =====================================================================
+   SHARED LOGIC (same engine as the Inventor quiz)
+   ===================================================================== */
+const ptsOf = qs => qs.reduce((a,q)=>a+q.pts,0);
+const LETTERS = ['a','b','c','d'];
+const correctText = q => `${LETTERS[q.ans]}) ${q.options[q.ans]}`;
+const load = (k,d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } };
+const save = (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+const shuffleQ = q => {
+  if(!CFG.shuffle || q.options.length < 3) return q;
+  const idx = q.options.map((_,i)=>i);
+  for(let i=idx.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [idx[i],idx[j]]=[idx[j],idx[i]]; }
+  return {...q, options: idx.map(i=>q.options[i]), ans: idx.indexOf(q.ans)};
+};
+
+const QBY = {};
+ORDER.forEach(s => QS[s].forEach(q => { QBY[q.id] = { q, sec: SEC[s] }; }));
+
+const Icon = ({name, size=44}) => (
+  <svg viewBox="0 0 48 48" width={size} height={size} fill="none" stroke="var(--ink)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {ICONS[name]}
+  </svg>
+);
+
+const Btn = React.forwardRef(({kind='primary', className='', ...p}, ref) => {
+  const base = 'inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-semibold transition active:scale-[.98] disabled:opacity-40 ';
+  const k = kind==='primary' ? 'bg-primary text-primaryink hover:opacity-90'
+          : kind==='accent'  ? 'bg-accent text-accentink hover:opacity-90'
+          : 'border border-line bg-card text-ink hover:border-primary';
+  return <button ref={ref} {...p} className={base + k + ' ' + className} />;
+});
+const Chip = ({children, className=''}) =>
+  <span className={'inline-block rounded-md px-2 py-1 font-mono text-xs tracking-wide ' + className}>{children}</span>;
+const LvChip = ({lv}) => lv ? (
+  <Chip className={lv==='b' ? 'bg-primarysoft text-primary' : 'bg-accentsoft text-accenttext'}>{lv==='b' ? '基礎' : '進階'}</Chip>
+) : null;
+
+/* Feedback panel under a checked question */
+function Feedback({q, s}) {
+  const ok = s.status==='right';
+  const tone = ok ? {box:'border-good bg-goodsoft', txt:'text-good', ic:'✓', t:'答對了！'}
+                  : {box:'border-bad bg-badsoft',  txt:'text-bad',  ic:'✕', t:'答錯了'};
+  return (
+    <div className="rise mt-5 flex flex-col gap-4">
+      <div className={'flex items-center gap-3 rounded-2xl border-2 px-4 py-3 ' + tone.box}>
+        <span className={'flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-card text-lg font-bold ' + tone.txt}>{tone.ic}</span>
+        <div className="min-w-0">
+          <div className={'font-display text-lg font-extrabold ' + tone.txt}>{tone.t}</div>
+          <div className="text-sm text-ink">得 {s.pts} / {q.pts} 分{!ok && <span>　正確答案：<b className="break-words">{correctText(q)}</b></span>}</div>
+        </div>
+      </div>
+      <div className="rounded-2xl border border-line bg-card p-4">
+        <div className="mb-1 font-mono text-xs tracking-wide text-muted">詳細解析</div>
+        <p className="text-ink leading-7">{q.why}</p>
+      </div>
+    </div>
+  );
+}
+
+function NoteCard({q, sec, yours, count, onRemove}) {
+  return (
+    <div className="rounded-2xl border border-line bg-card p-4">
+      <div className="mb-2 flex flex-wrap items-center gap-2">
+        <Chip className="bg-primarysoft text-primary">{sec.code} · Q{q.no}</Chip>
+        <LvChip lv={q.lv}/>
+        {count>1 && <span className="text-xs text-muted">答錯 {count} 次</span>}
+      </div>
+      <p className="break-words font-medium leading-7">{q.q}</p>
+      {q.dg && <div className="diagbox my-3" dangerouslySetInnerHTML={{__html: renderDiagram(q.dg)}}/>}
+      {yours && <p className="mt-2 break-words text-sm"><span className="text-muted">你的答案：</span><span className="text-bad">{yours}</span></p>}
+      <p className="mt-1 break-words text-sm"><span className="text-muted">正確答案：</span><b className="text-good">{correctText(q)}</b></p>
+      <p className="mt-3 text-sm leading-6 text-ink">{q.why}</p>
+      {onRemove && <Btn kind="ghost" className="mt-3 !py-2 text-sm" onClick={onRemove}>已學會，從筆記移除</Btn>}
+    </div>
+  );
+}
+
+function SegBar({parts, flat, st, idx}) {
+  const curId = flat[idx] && flat[idx].sec.id;
+  return (
+    <div className="flex gap-1.5" role="progressbar" aria-valuemin="0" aria-valuemax={flat.length}
+         aria-valuenow={flat.filter(x => st[x.q.id] && st[x.q.id].checked).length}>
+      {parts.map(p => {
+        const done = p.qs.filter(q => st[q.id] && st[q.id].checked).length;
+        const cur = curId === p.sec.id;
+        return (
+          <div key={p.sec.id} style={{flex: p.qs.length}} className="min-w-0">
+            <div className="h-2.5 overflow-hidden rounded-full bg-soft">
+              <div className="h-full rounded-full bg-accent transition-all duration-300" style={{width: (done/p.qs.length*100) + '%'}}/>
+            </div>
+            {parts.length>1 && <div className={'mt-1 truncate font-mono text-[10px] ' + (cur ? 'font-semibold text-ink' : 'text-muted')}>{p.sec.code}</div>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Quiz({session, onHome, onRecord, onFinish, onNotes}) {
+  const { parts, title } = session;
+  const flat = useMemo(() => parts.flatMap(p => p.qs.map(q => ({q, sec:p.sec}))), [parts]);
+  const [idx, setIdx] = useState(0);
+  const [st, setSt] = useState({});
+  const [fin, setFin] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const nextRef = useRef(null);
+
+  const total = ptsOf(flat.map(x => x.q));
+  const score = flat.reduce((a,x) => a + ((st[x.q.id] && st[x.q.id].pts) || 0), 0);
+  const answered = flat.filter(x => st[x.q.id] && st[x.q.id].checked).length;
+  const cur = flat[idx]; const q = cur.q, sec = cur.sec, s = st[q.id] || {};
+
+  const patch = (id,o) => setSt(prev => ({...prev, [id]: {...(prev[id]||{}), ...o}}));
+  const pickMC = i => {
+    if(s.checked) return;
+    const status = i===q.ans ? 'right' : 'wrong';
+    patch(q.id, {checked:true, status, pts: status==='right' ? q.pts : 0, value:q.options[i], pick:i});
+    onRecord(q, status, q.options[i]);
+  };
+  const next = () => { if(idx < flat.length-1) setIdx(idx+1); else { setFin(true); onFinish(session.key, score, total); } };
+
+  useEffect(() => { try { window.scrollTo({top:0}); } catch(e){} }, [idx, fin]);
+  useEffect(() => {
+    if(!s.checked) return;
+    const t = setTimeout(() => { try { nextRef.current && nextRef.current.focus({preventScroll:true}); } catch(e){} }, 150);
+    return () => clearTimeout(t);
+  }, [s.checked, idx]);
+
+  if(fin) {
+    const g = CFG.gradeOf(score,total);
+    const pct = Math.round(score/total*100);
+    const wrong = flat.filter(x => st[x.q.id] && st[x.q.id].status !== 'right');
+    return (
+      <div className="rise pb-10 pt-6">
+        <div className="blueprint rounded-3xl border border-line p-6 text-center">
+          <Chip className="bg-primarysoft text-primary">{title}</Chip>
+          <div className="mt-4 font-display text-7xl font-extrabold leading-none">{score}<span className="text-3xl text-muted"> / {total}</span></div>
+          <div className="mt-2 text-lg text-muted">{pct}%</div>
+          <div className="mx-auto mt-5 inline-flex items-center gap-3 rounded-2xl bg-accent px-5 py-3 text-accentink">
+            <span className="font-display text-3xl font-extrabold">{g.k}</span>
+            <span className="text-left leading-tight"><span className="block font-display text-lg font-extrabold">{g.name}</span><span className="text-sm font-medium">{g.zh}</span></span>
+          </div>
+          <p className="mx-auto mt-4 max-w-md text-ink">{g.msg}</p>
+          <div className="mx-auto mt-5 max-w-xl overflow-x-auto"><div className="grid grid-cols-5 gap-1 text-center font-mono text-[11px] text-muted" style={{minWidth:'420px'}}>
+            {[['100%',score===total],['99-90%',pct>=90&&score<total],['89-80%',pct>=80&&pct<90],['79-70%',pct>=70&&pct<80],['Below 69%',pct<70]].map(([l,on]) =>
+              <div key={l} className={'rounded-lg border px-1 py-1.5 ' + (on ? 'border-accent bg-accentsoft font-bold text-accenttext' : 'border-line bg-card')}>{l}</div>)}
+          </div></div>
+        </div>
+
+        <div className="mt-5 rounded-2xl border border-line bg-card p-5">
+          <h2 className="font-display text-lg font-extrabold">各單元得分</h2>
+          <div className="mt-3 flex flex-col gap-3">
+            {parts.map(p => {
+              const got = p.qs.reduce((a,q) => a + ((st[q.id]&&st[q.id].pts)||0), 0), tot = ptsOf(p.qs);
+              return (<div key={p.sec.id}>
+                <div className="mb-1 flex items-baseline justify-between gap-3 text-sm">
+                  <span className="min-w-0 truncate"><b>{p.sec.code}</b> <span className="text-muted">{p.sec.zh}</span></span>
+                  <span className="font-mono font-semibold">{got}/{tot}</span>
+                </div>
+                <div className="h-2.5 overflow-hidden rounded-full bg-soft"><div className="h-full rounded-full bg-accent" style={{width:(got/tot*100)+'%'}}/></div>
+              </div>);
+            })}
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <Btn kind="accent" className="flex-1" onClick={() => session.retry()}>重新挑戰</Btn>
+          <Btn kind="ghost" className="flex-1" onClick={onHome}>回首頁選單元</Btn>
+          <Btn kind="ghost" className="flex-1" onClick={onNotes}>全部錯題筆記</Btn>
+        </div>
+
+        <h2 className="mt-9 font-display text-xl font-extrabold">本次錯題筆記 <span className="text-base font-semibold text-muted">（{wrong.length} 題）</span></h2>
+        {wrong.length===0
+          ? <p className="mt-3 rounded-2xl border border-good bg-goodsoft p-4 text-good">這次沒有錯題，太厲害了！</p>
+          : <div className="mt-3 flex flex-col gap-3">{wrong.map(x => <NoteCard key={x.q.id} q={x.q} sec={x.sec} yours={st[x.q.id].value}/>)}</div>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="pb-10">
+      <header className="sticky z-20 bg-bg pb-3 pt-3" style={{top:'env(safe-area-inset-top,0px)'}}>
+        <div className="flex items-center justify-between gap-3">
+          <button onClick={() => setLeaving(true)} className="rounded-lg px-2 py-1 text-sm font-semibold text-muted hover:text-ink">← 離開</button>
+          <div className="min-w-0 flex-1 truncate text-center font-display font-extrabold">{title}</div>
+          <div className="font-mono text-sm"><b>{score}</b><span className="text-muted">/{total}</span></div>
+        </div>
+        <div className="mt-3"><SegBar parts={parts} flat={flat} st={st} idx={idx}/></div>
+        <div className="mt-1 flex justify-between text-xs text-muted"><span>第 {idx+1} / {flat.length} 題</span><span>已作答 {answered} 題</span></div>
+      </header>
+
+      {leaving && (
+        <div className="rise mb-3 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-bad bg-badsoft p-3 text-sm">
+          <span className="text-ink">確定要離開嗎？目前的作答進度不會保留。</span>
+          <span className="flex gap-2"><Btn kind="ghost" className="!px-3 !py-1.5 text-sm" onClick={() => setLeaving(false)}>繼續作答</Btn><Btn className="!px-3 !py-1.5 text-sm" onClick={onHome}>離開</Btn></span>
+        </div>
+      )}
+
+      <div key={q.id} className="rise rounded-3xl border border-line bg-card p-5 sm:p-7">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <Chip className="bg-primarysoft text-primary">{sec.code}</Chip>
+          <span className="text-sm font-semibold">{sec.zh}</span>
+          <span className="text-sm text-muted">· Q{q.no} · {q.pts} 分</span>
+          <LvChip lv={q.lv}/>
+        </div>
+        <p className="mb-4 text-sm italic text-muted">{sec.dir}</p>
+
+        {q.dg && (
+          <div className="mb-5 text-center">
+            <div className="diagbox mx-auto" dangerouslySetInnerHTML={{__html: renderDiagram(q.dg)}}/>
+            <div className="mt-2 font-mono text-xs tracking-wide text-muted">{CFG.diagCaption}</div>
+          </div>
+        )}
+
+        <p className="text-xl font-medium leading-snug break-words">{q.q}</p>
+
+        <div className="mt-5 flex flex-col gap-2.5">
+          {q.options.map((o,i) => {
+            const picked = s.pick===i, isAns = i===q.ans;
+            let cls = 'border-line bg-card hover:border-primary';
+            if(s.checked) cls = isAns ? 'border-good bg-goodsoft' : picked ? 'border-bad bg-badsoft' : 'border-line bg-card opacity-60';
+            return (
+              <button key={i} onClick={() => pickMC(i)} aria-pressed={picked}
+                className={'flex w-full items-start gap-3 rounded-xl border-2 px-4 py-3 text-left transition ' + cls}>
+                <span className={'mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border font-mono text-sm font-semibold ' + (s.checked && isAns ? 'border-good bg-good text-card' : s.checked && picked ? 'border-bad bg-bad text-card' : 'border-line')}>{LETTERS[i]}</span>
+                <span className="min-w-0 flex-1 break-words leading-snug">{o}</span>
+                {s.checked && isAns && <span className="font-bold text-good">✓</span>}
+                {s.checked && picked && !isAns && <span className="font-bold text-bad">✕</span>}
+              </button>
+            );
+          })}
+        </div>
+
+        {s.checked && <Feedback q={q} s={s}/>}
+      </div>
+
+      <div className="mt-5 flex items-center justify-between gap-3">
+        <Btn kind="ghost" onClick={() => setIdx(idx-1)} disabled={idx===0}>← 上一題</Btn>
+        {s.checked
+          ? <Btn kind="accent" onClick={next} ref={nextRef}>{idx<flat.length-1 ? '下一題 →' : '完成，查看成績'}</Btn>
+          : <span className="text-sm text-muted">點選一個選項，馬上看結果</span>}
+      </div>
+    </div>
+  );
+}
+
+function UnitCard({sec, best, onStart}) {
+  const qs = QS[sec.id], b = best[sec.id];
+  const bn = qs.filter(q => q.lv==='b').length;
+  return (
+    <button onClick={onStart} className="flex flex-col gap-3 rounded-2xl border border-line bg-card p-4 text-left transition hover:border-primary active:scale-[.99]">
+      <div className="flex items-center justify-between gap-2">
+        <Chip className="bg-primarysoft text-primary">{sec.code}</Chip>
+        <span className="text-xs text-muted">{sec.tag}</span>
+      </div>
+      <div className="flex items-start gap-3">
+        <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primarysoft"><Icon name={sec.icon} size={40}/></div>
+        <div className="min-w-0">
+          <div className="font-display text-lg font-extrabold leading-snug">{sec.en}</div>
+          <div className="text-sm text-muted">{sec.desc}</div>
+        </div>
+      </div>
+      <div className="mt-auto flex items-center justify-between text-sm">
+        <span className="text-muted">{qs.length} 題{bn>0 && bn<qs.length ? `（基礎 ${bn}／進階 ${qs.length-bn}）` : ''}</span>
+        {b ? <span className="font-semibold text-good">最佳 {b.score}/{b.total}</span> : <span className="text-muted">尚未挑戰</span>}
+      </div>
+    </button>
+  );
+}
+
+function FullCard({f, best, onStart}) {
+  const qs = f.secs.flatMap(s => QS[s]);
+  return (
+    <section className="rounded-3xl border-2 border-accent bg-card p-5 sm:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="min-w-0">
+          <Chip className="bg-accentsoft text-accenttext">{f.tag}</Chip>
+          <h2 className="mt-2 font-display text-2xl font-extrabold">{f.title}</h2>
+          <p className="mt-1 text-sm text-muted">{f.desc} · {qs.length} 題 · 共 {ptsOf(qs)} 分</p>
+          {best && <p className="mt-1 text-sm font-semibold text-good">最佳成績 {best.score}/{best.total}</p>}
+        </div>
+        <Btn kind="accent" onClick={onStart}>開始挑戰</Btn>
+      </div>
+    </section>
+  );
+}
+
+function Home({best, noteCount, start, openNotes, practiceNotes, openKey}) {
+  return (
+    <div className="pb-10 pt-6">
+      <div className="blueprint relative overflow-hidden rounded-3xl border border-line p-6 sm:p-8">
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <Chip className="bg-primarysoft text-primary">{CFG.hero.chip}</Chip>
+            <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-5xl" style={{textWrap:'balance'}}>{CFG.hero.title}</h1>
+            <p className="mt-2 text-muted">{CFG.hero.sub}</p>
+          </div>
+          <div className="shrink-0"><Mascot/></div>
+        </div>
+        <p className="mt-5 max-w-lg text-ink">{CFG.hero.intro}</p>
+      </div>
+
+      {CFG.keypoints && (
+        <button onClick={openKey} className="mt-6 flex w-full items-center gap-4 rounded-2xl border border-line bg-card p-4 text-left transition hover:border-primary active:scale-[.99]">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-accentsoft"><Icon name="notes" size={40}/></div>
+          <div className="min-w-0">
+            <Chip className="bg-accentsoft text-accenttext">KEY POINTS</Chip>
+            <div className="mt-1 font-display text-lg font-extrabold">重點整理</div>
+            <div className="text-sm text-muted">先看課文重點、單字與粒子模型，再做題目</div>
+          </div>
+        </button>
+      )}
+
+      <div className="mt-6 flex flex-col gap-3">
+        {FULLS.map(f => <FullCard key={f.key} f={f} best={best[f.key]} onStart={() => start({key:f.key, title:f.title, secs:f.secs})}/>)}
+      </div>
+
+      {GROUPS.map(g => (
+        <div key={g.tag}>
+          <h2 className="mt-8 font-display text-xl font-extrabold">{g.title}</h2>
+          <p className="text-sm text-muted">{g.sub}</p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            {g.mods.map(s => <UnitCard key={s} sec={SEC[s]} best={best} onStart={() => start({key:s, title:SEC[s].code + ' ' + SEC[s].en, secs:[s]})}/>)}
+          </div>
+        </div>
+      ))}
+
+      <section className="mt-8 rounded-2xl border border-line bg-card p-5">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 className="font-display text-xl font-extrabold">錯題筆記</h2>
+            <p className="text-sm text-muted">{noteCount>0 ? `目前收藏 ${noteCount} 題，答對後可從筆記移除。` : '還沒有錯題。答錯的題目會自動收進來。'}</p>
+          </div>
+          <div className="flex gap-2">
+            <Btn kind="ghost" onClick={openNotes}>查看筆記</Btn>
+            <Btn onClick={practiceNotes} disabled={noteCount===0}>只重練錯題</Btn>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function KeyPoints({onBack, start}) {
+  return (
+    <div className="pb-10 pt-6">
+      <button onClick={onBack} className="mb-3 rounded-lg px-2 py-1 text-sm font-semibold text-muted hover:text-ink">← 回首頁</button>
+      <div className="blueprint rounded-3xl border border-line p-6">
+        <Chip className="bg-accentsoft text-accenttext">KEY POINTS</Chip>
+        <h1 className="mt-2 font-display text-3xl font-extrabold">重點整理</h1>
+        <p className="mt-1 text-muted">先把重點看過一遍，再到首頁挑戰各單元。</p>
+      </div>
+      <div className="nt mt-4" dangerouslySetInnerHTML={{__html: notesHTML()}}/>
+      <h2 className="mt-8 font-display text-xl font-extrabold">看完重點，開始測驗</h2>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        {ORDER.map(s => <Btn key={s} kind="ghost" className="!justify-start text-left" onClick={() => start({key:s, title:SEC[s].code + ' ' + SEC[s].en, secs:[s]})}>
+          <Icon name={SEC[s].icon} size={30}/><span className="min-w-0 truncate">{SEC[s].code} {SEC[s].en}</span></Btn>)}
+      </div>
+    </div>
+  );
+}
+
+function Notebook({notes, onBack, onRemove, onClear, onPractice}) {
+  const ids = Object.keys(notes).filter(id => QBY[id]);
+  const [confirmClear, setConfirmClear] = useState(false);
+  return (
+    <div className="pb-10 pt-6">
+      <button onClick={onBack} className="mb-3 rounded-lg px-2 py-1 text-sm font-semibold text-muted hover:text-ink">← 回首頁</button>
+      <div className="blueprint rounded-3xl border border-line p-6">
+        <h1 className="font-display text-3xl font-extrabold">錯題筆記</h1>
+        <p className="mt-1 text-muted">共 {ids.length} 題。先讀解析，再按「只重練錯題」。</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Btn onClick={onPractice} disabled={ids.length===0}>只重練錯題</Btn>
+          {!confirmClear
+            ? <Btn kind="ghost" onClick={() => setConfirmClear(true)} disabled={ids.length===0}>清空筆記</Btn>
+            : <><Btn kind="ghost" onClick={() => setConfirmClear(false)}>取消</Btn><Btn className="!bg-bad" onClick={() => { onClear(); setConfirmClear(false); }}>確定清空</Btn></>}
+        </div>
+      </div>
+      {ids.length===0 && <p className="mt-6 rounded-2xl border border-line bg-card p-5 text-muted">目前沒有錯題。去挑戰一個單元，答錯的題目會自動出現在這裡。</p>}
+      {ORDER.map(s => {
+        const list = QS[s].filter(q => notes[q.id]);
+        if(!list.length) return null;
+        return (
+          <section key={s} className="mt-7">
+            <h2 className="font-display text-lg font-extrabold">{SEC[s].code} <span className="text-base font-semibold text-muted">{SEC[s].zh}</span></h2>
+            <div className="mt-3 flex flex-col gap-3">
+              {list.map(q => <NoteCard key={q.id} q={q} sec={SEC[s]} yours={notes[q.id].last} count={notes[q.id].n} onRemove={() => onRemove(q.id)}/>)}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function App() {
+  const [view, setView] = useState('home');
+  const [session, setSession] = useState(null);
+  const [notes, setNotes] = useState(() => load(CFG.lsNotes, {}));
+  const [best, setBest] = useState(() => load(CFG.lsBest, {}));
+  useEffect(() => { save(CFG.lsNotes, notes); }, [notes]);
+  useEffect(() => { save(CFG.lsBest, best); }, [best]);
+
+  const begin = (cfg) => {
+    const run = (n) => {
+      const parts = cfg.secs.map(s => ({ sec:SEC[s], qs: (cfg.only ? QS[s].filter(q => cfg.only[q.id]) : QS[s]).map(shuffleQ) })).filter(p => p.qs.length);
+      setSession({ ...cfg, parts, runId:n, retry: () => run(n+1) });
+    };
+    run(1); setView('quiz');
+  };
+  const start = (cfg) => begin({ mode:'unit', ...cfg });
+  const practiceNotes = () => begin({ key:'notes', title:'錯題重練', mode:'notes', secs:ORDER, only:notes });
+
+  const onRecord = (q, status, yours) => {
+    if(status !== 'right') setNotes(n => ({...n, [q.id]: { n:((n[q.id]&&n[q.id].n)||0)+1, last:yours, at:Date.now() }}));
+    else if(session && session.mode==='notes') setNotes(n => { const c={...n}; delete c[q.id]; return c; });
+  };
+  const onFinish = (key, score, total) => {
+    if(key==='notes') return;
+    setBest(b => (!b[key] || score/total > b[key].score/b[key].total) ? {...b, [key]:{score,total}} : b);
+  };
+  const removeNote = id => setNotes(n => { const c={...n}; delete c[id]; return c; });
+  const count = Object.keys(notes).filter(id => QBY[id]).length;
+
+  if(view==='quiz' && session) return <Quiz key={session.runId + session.key} session={session} onHome={() => setView('home')} onRecord={onRecord} onFinish={onFinish} onNotes={() => setView('notes')}/>;
+  if(view==='notes') return <Notebook notes={notes} onBack={() => setView('home')} onRemove={removeNote} onClear={() => setNotes({})} onPractice={practiceNotes}/>;
+  if(view==='key') return <KeyPoints onBack={() => setView('home')} start={start}/>;
+  return <Home best={best} noteCount={count} start={start} openNotes={() => setView('notes')} practiceNotes={practiceNotes} openKey={() => setView('key')}/>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+
+</script>
+</body>
+</html>
